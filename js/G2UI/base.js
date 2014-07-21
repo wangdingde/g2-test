@@ -996,8 +996,8 @@
 				return data;
 			}
 			
-			if (mname && uname) {
-				unit = Data.getUnit(mname, uname);
+			if (mname) {
+				unit = uname ? Data.getUnit(mname, uname) : Data.getModel(mname);
 				
 				if (unit) {
 					return unit;
@@ -1026,7 +1026,7 @@
 		getUnit: function(mname, uname){
 			var model = Data.getModel(mname);
 			
-			return model ? model.getUnit(uname) : null;
+			return model ? (uname ? model.getUnit(uname) : model.topUnit()) : null;
 		}
 	};
 	

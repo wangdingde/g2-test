@@ -1,5 +1,5 @@
 (function ($, $$) {
-var Combo = function (INPUT, UTIL, COMBODATA) {
+var Combo = function (INPUT, UTIL, COMBODATA, ZCENTER) {
 	function _hideCombo(combo) {
 		$(document.body).children("." + comboListCss).each(function () {
 			if (this.combo != combo && this.combo.isShowing) {
@@ -285,6 +285,7 @@ var Combo = function (INPUT, UTIL, COMBODATA) {
 		showCombo: function () {
 			if (this.isShowing === false) {
 				!this.combo && this._initCombo();
+				ZCENTER.toFront(this.combo);
 				this._resizeComboList();
 				this.layout();
 				$(this.input).focus();
@@ -338,6 +339,6 @@ var Combo = function (INPUT, UTIL, COMBODATA) {
 
 $$.loadCss("form/combo.css", true);
 
-$$.define('form.Combo', ['form.Input', "core.Util", "data.ComboData"], Combo);
+$$.define('form.Combo', ['form.Input', "core.Util", "data.ComboData", "tools.ZCenter"], Combo);
 
 })(window.jQuery, window.com.pouchen);

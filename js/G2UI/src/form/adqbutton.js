@@ -1,57 +1,41 @@
-(function($$) {
-	var adqbutton = function(BUTTON){
-		return {
-			
-		};
-	};
-	
-	
-	var AdqButton = {
-		cons : function(opts) {
-			this.apply(opts, {});
-			var el = this;
-
-			$(this.dom).linkbutton({
-				key : "advanceQuery",
-				text : this.text || "高级查询",
-				iconCls : "icon-search",
-				plain : true
-			});
-
-			$(this.dom).click(function() {
-				if ($(this).linkbutton("options").disabled) {
-					return;
-				}
-				el.showWin();
-			});
+(function($, $$) {
+var adqbutton = function(BUTTON, BASEDATA, DATAUNIT, WIN, GRID, COMBO){
+	return {
+		extend: BUTTON,
+		mixins: [BASEDATA],
+		ctor: function(){
+			this.handler = function(){
+				this.showWin();
+			};
 		},
-		disable : function() {
-			$(this.dom).linkbutton("disable");
+		defCfg: {
+			text: "高级筛选"
 		},
-		enable : function() {
-			$(this.dom).linkbutton("enable");
-		},
-		showWin : function() {
+		showWin: function() {
 			var queryWin = this.win;
 			if (!queryWin) {
-				this.init();
+				this.initColumnData();
+				this.initQueryUnit();
+				this.initWin();
 			} else {
-				$(queryWin).dialog("open");
+				queryWin.open();
 			}
 		},
-		init : function() {
-			this.initColumnData();
-			this.initQueryUnit();
-			this.initWin();
+		getSourceUnit: function(){
+			var unit = this.getDataSource();
+			
+			if (unit.topUnit) {
+				unit = unit.topUnit();
+			}
+			return unit;
 		},
-		getColCaption : function(col) {
-			return col.getCaption();
-		},
-		initColumnData : function() {
-			var cols = this.unit.cols, columns = this.columns || [],
+		initColumnData: function() {
+			var ds = this.getSourceUnit(),
+				cols = ds.cols, columns = this.columns || [],
 			//excludes = this.excludes || [],
 			//colNames = this.colNames || {},
-			columnData = [], item, col;
+				columnData = [], item, col;
+			
 			if (columns.length === 0) {
 				for ( var i = 0; i < cols.length; i++) {
 					col = cols[i];
@@ -66,7 +50,7 @@
 					if (!item.field) {
 						continue;
 					}
-					col = this.unit.getCol(item.field);
+					col = ds.getCol(item.field);
 					if (!col) {
 						continue;
 					}
@@ -78,8 +62,8 @@
 			}
 			this.columnData = columnData;
 		},
-		initQueryUnit : function() {
-			var queryUnit = $$.create("DataUnit", {});
+		initQueryUnit: function() {
+			var queryUnit = $$.create(DATAUNIT, {});
 			queryUnit.aa = true;
 			queryUnit.am = true;
 			queryUnit.ad = true;
@@ -97,109 +81,28 @@
 
 			this.queryUnit = queryUnit;
 		},
-		getTableId : function() {
-			return this.unit.uname + "_queryTable";
-		},
-		initWin : function() {
-			var el = this, unit = this.unit, queryWin = this.win, queryUnit = this.queryUnit, queryTable = this.table, optData = this.optData, columnData = this.columnData;
-
-			queryWin = document.createElement("div");
-			queryTable = document.createElement("div");
-			queryTable.id = this.getTableId();
-			$(queryTable).appendTo(queryWin);
-			$(queryWin).appendTo(document.body);
-			$(queryWin).dialog({
-				title : this.text || "高级查询",
-				width : 500,
-				closed : false,
-				collapsible : false,
-				minimizable : false,
-				modal : true,
-				height : 300,
-				buttons : [ {
-					text : '查询',
-					iconCls : 'icon-search',
-					plain : true,
-					handler : function() {
-						el.query();
-					}
-				}, {
-					text : '取消',
-					iconCls : 'icon-cancel',
-					plain : true,
-					handler : function() {
-						$(queryWin).dialog("close");
-					}
-				} ]
-			});
-
-			$(queryTable).datagrid({
-				columns : [ [ {
-					field : 'column',
-					title : '条件名',
-					width : 50,
-					editor : {
-						type : "asc",
-						options : {
-							type : "Combo",
-							editable : false,
-							comboData : columnData
-						}
-					},
-					formatter : function(value, row, index) {
-						var rec;
-						for ( var i = 0; i < columnData.length; i++) {
-							if (columnData[i].no === value) {
-								rec = columnData[i].name;
-								break;
-							}
-						}
-						return rec || value
-					}
-				}, {
-					field : 'opt',
-					title : '比较符',
-					width : 50,
-					editor : {
-						type : "asc",
-						options : {
-							type : "Combo",
-							editable : false,
-							comboData : optData
-						}
-					},
-					formatter : function(value, row, index) {
-						var rec;
-						for ( var i = 0; i < optData.length; i++) {
-							if (optData[i].no === value) {
-								rec = optData[i].name;
-								break;
-							}
-						}
-						return rec || value
-					}
-				}, {
-					field : 'value',
-					title : '条件值',
-					width : 50,
-					editor : 'asc'
-				} ] ]
-			});
-
-			$$.create("Toolbar", {
-				tid : queryTable.id,
-				noRefresh : true,
-				sysBtns : [ "add", "remove" ],
-				userButtons : {
-					add : {
-						key : "add",
-						text : "增加条件"
-					},
-					remove : {
-						key : "remove",
-						text : "删除条件",
-						handler : function() {
-							if (queryUnit.isInputing) {
+		initWin: function() {
+			var queryWin = this.win, 
+				queryUnit = this.queryUnit, 
+				optData = this.optData, 
+				columnData = this.columnData;
+			
+			queryWin = $$.create(WIN, {
+				title: this.text,
+				width: 500,
+				height: 300,
+				closed: false,
+				collapsible: false,
+				minimizable: false,
+				maximizable: false,
+				modal: true,
+				body: {
+					xtype: GRID,
+					noHeader: true,
+					ttbar: {
+						needButtons: ["add", "remove"],
+						onRemove: function(){
+							if(queryUnit.isInputing){
 								queryUnit.endInput(true);
 							}
 							queryUnit.deleteRow(queryUnit.curr);
@@ -212,16 +115,38 @@
 								queryUnit.beginInput();
 							}
 						}
+					},
+					body: {
+						unit: queryUnit,
+						columns: [{
+							field : 'column', title : '条件名', editor : {
+								xtype: COMBO,
+								editable : false,
+								comboData : columnData
+							}
+						}, {
+							field : 'opt', title : '比较符', editor : {
+								xtype: COMBO,
+								editable : false,
+								comboData : optData
+							}
+						}, {
+							field : 'value', title : '条件值', editor: {}
+						}]
 					}
 				}
 			});
-
-			$$.bindingSorce(queryUnit, queryTable, "G");
-
+			
 			this.win = queryWin;
-			this.table = queryTable;
+			//this.table = queryTable;
 		},
-		getQueryParmas : function() {
+		getTableId: function() {
+			return this.unit.uname + "_queryTable";
+		},
+		getColCaption: function(col) {
+			return col.getCaption();
+		},
+		getQueryParmas: function() {
 			var unit = this.unit, queryWin = this.win, queryUnit = this.queryUnit, queryTable = this.table;
 			var whereStr = this.whereStr || "", params = this.params ? $
 					.extend({}, this.params) : {}, row, column, opt, val, colKey, col, isDate;
@@ -318,35 +243,28 @@
 				}, true);
 			}
 		},
-		optData : [ {
-			no : "=",
-			name : "等于"
+		optData: [{
+			no : "=", name : "等于"
 		}, {
-			no : "<>",
-			name : "不等于"
+			no : "<>", name : "不等于"
 		}, {
-			no : "%%",
-			name : "包含"
+			no : "%%", name : "包含"
 		}, {
-			no : "=%",
-			name : "开头是"
+			no : "=%", name : "开头是"
 		}, {
-			no : "%=",
-			name : "结尾是"
+			no : "%=", name : "结尾是"
 		}, {
-			no : ">=",
-			name : "大于等于"
+			no : ">=", name : "大于等于"
 		}, {
-			no : "<=",
-			name : "小于等于"
+			no : "<=", name : "小于等于"
 		}, {
-			no : ">",
-			name : "大于"
+			no : ">", name : "大于"
 		}, {
-			no : "<",
-			name : "小于"
-		} ]
+			no : "<", name : "小于"
+		}]
 	};
-	$$.register("UIControl", "AdqButton", AdqButton);
+};
+	
+$$.define("form.AdqButton", ["form.Button", "data.BaseData", "data.DataUnit", "panel.Window", "grid.Grid", "form.Combo"], adqbutton);
 
-})(window.com.ASC);
+})(window.jQuery, window.com.pouchen);

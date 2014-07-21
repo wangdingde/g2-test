@@ -20,6 +20,7 @@ var mask = function (UICONTROL, UTIL, ZCENTER) {
 					maskEl.show();
 				}
 				maskEl.oriOverflow = $(document.body).css("overflow");
+				maskEl.isHidden = false;
 				$(document.body).css("overflow", "hidden");
 				ZCENTER.toFront(maskEl);
 				if (toEl) {

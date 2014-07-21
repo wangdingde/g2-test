@@ -53,6 +53,7 @@
 		"form.CheckBox": "src/form/checkbox.js",
 		/////
 		"form.Button": "src/form/button.js",
+		"form.AdqButton": "src/form/adqbutton.js",
 		"form.Calendar": "src/form/calendar.js",
 		"form.Label": "src/form/label.js",
 		"form.LabelField": "src/form/labelfield.js",

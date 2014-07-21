@@ -36,7 +36,7 @@ var bd = function(CONTROL, RESULTUNIT){
 					data = resp;
 				}
 				//當data已經爲UNIT類型時，直接setUnit返回即可
-				if (data && data.$instance && data.loadData) {
+				if (data && data.$instance && data.loadJson) {
 					unit = tunit;
 					tunit = data;
 					

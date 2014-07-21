@@ -14,6 +14,7 @@ var win = function (PANEL, MASK) {
 				});
 				 !this.closed && this.showMask();
 			}
+			this.resize();
 		},
 		defCfg: {
 			title:'New Window',
