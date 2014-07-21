@@ -1,0 +1,108 @@
+.common-css-opacity-2 {
+	opacity: 0.2;
+	filter: alpha(opacity = 20);
+}
+
+.common-css-opacity-3 {
+	opacity: 0.3;
+	filter: alpha(opacity = 30);
+}
+
+.common-css-opacity-5 {
+	opacity: 0.5;
+	filter: alpha(opacity = 50);
+}
+
+.common-css-opacity-7 {
+	opacity: 0.7;
+	filter: alpha(opacity = 70);
+}
+
+.common-css-radius-all-3 {
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.common-css-radius-left-3 {
+	border-radius: 3px 0px 0px 3px;
+	-moz-border-radius: 3px 0px 0px 3px;
+	-webkit-border-radius: 3px 0px 0px 3px;
+	border-radius: 3px 0px 0px 3px;
+}
+
+.common-css-radius-right-3 {
+	border-radius: 0px 3px 3px 0px;
+	-moz-border-radius: 0px 3px 3px 0px;
+	-webkit-border-radius: 0px 3px 3px 0px;
+	border-radius: 0px 3px 3px 0px;
+}
+
+.common-css-radius-top-3 {
+	border-radius: 3px 3px 0px 0px;
+	-moz-border-radius: 3px 3px 0px 0px;
+	-webkit-border-radius: 3px 3px 0px 0px;
+	border-radius: 3px 3px 0px 0px;
+}
+
+.common-css-radius-bottom-3 {
+	border-radius: 0px 0px 3px 3px;
+	-moz-border-radius: 0px 0px 3px 3px;
+	-webkit-border-radius: 0px 0px 3px 3px;
+	border-radius: 0px 0px 3px 3px;
+}
+
+.common-css-radius-all-5 {
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.common-css-radius-left-5 {
+	border-radius: 5px 0px 0px 5px;
+	-moz-border-radius: 5px 0px 0px 5px;
+	-webkit-border-radius: 5px 0px 0px 5px;
+	border-radius: 5px 0px 0px 5px;
+}
+
+.common-css-radius-right-5 {
+	border-radius: 0px 5px 5px 0px;
+	-moz-border-radius: 0px 5px 5px 0px;
+	-webkit-border-radius: 0px 5px 5px 0px;
+	border-radius: 0px 5px 5px 0px;
+}
+
+.common-css-radius-top-5 {
+	border-radius: 5px 5px 0px 0px;
+	-moz-border-radius: 5px 5px 0px 0px;
+	-webkit-border-radius: 5px 5px 0px 0px;
+	border-radius: 5px 5px 0px 0px;
+}
+
+.common-css-radius-bottom-5 {
+	border-radius: 0px 0px 5px 5px;
+	-moz-border-radius: 0px 0px 5px 5px;
+	-webkit-border-radius: 0px 0px 5px 5px;
+	border-radius: 0px 0px 5px 5px;
+}
+
+.common-css-display-inline-block {
+	/*Firefox3 beta、IE8 beta、Opera、Safari 支持，IE 下触发 inline 元素的 hasLayout*/
+	display: -moz-inline-stack; /* Firefox 的私有属性，也可以用 -moz-inline-box */
+	display: inline-block;
+	zoom: 1; /*IE 下触发 hasLayout*/ *
+	display: inline;
+	/*一旦IE 下触发了 hasLayout，设置 block 元素为 inline 会使 display:inline 效果与 display:inline-block 相似*/
+}
+
+.focus-input{
+	position: absolute;
+	left: -99999px;
+	top: -99999px;
+}
+.focus-input input{
+	width: 0px;
+	height: 0px;
+}

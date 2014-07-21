@@ -1,0 +1,33 @@
+.asc-button-container{
+    display: inline-block;
+    background-image: url("../images/form/btn-left.gif");
+    background-repeat: no-repeat;
+    background-position: left center;
+    padding: 0 0 0 5px;
+}
+.asc-button-innerContainer{
+    padding: 0 5px 0 0;
+    background-image: url("../images/form/btn-right.gif");
+    background-repeat: no-repeat;
+    background-position: right center;
+}
+.asc-button-common{
+    cursor: pointer;
+    background-image: url("../images/form/btn-line.gif");
+    background-repeat: repeat-x;
+    font-size: 12px;
+    font-family: Arial;
+}
+.asc-button-text{
+     text-overflow: ellipsis;
+     -o-text-overflow: ellipsis;
+     overflow: hidden;
+     white-space: nowrap;
+     display: inline-block;
+}
+.asc-button-hover{
+    color: red;
+}
+.form-button-disabled{
+	opacity: 0.3;
+}

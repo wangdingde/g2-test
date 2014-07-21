@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="js/codemirror/lib/codemirror.css" />
+<style type="text/css">
+body{
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+	font-size: 12px;
+}
+.header{
+	height: 60px;
+	border-bottom: 1px solid #000000;
+}
+.curr-page{
+	
+}
+.main{
+	overflow: auto;
+}
+.main-editors{
+	
+}
+.editor-info, .editor-info-bg{
+	position: absolute;
+	height: 22px;
+	right: 20px;
+	top: 5px;
+	z-index: 10;
+}
+.editor-info{
+	color: #FFFFFF;
+	background-color: #434343;
+	line-height: 22px;
+	cursor: pointer;
+	text-decoration: underline;
+	padding: 0px 5px 0px 5px;
+}
+.editor-info-bg{
+	background-color: #000000;
+}
+.editor-container{
+	position: relative;
+	overflow: hidden;
+}
+.requires{
+
+}
+.requires a{
+	margin: 0px 5px 0px 0px;
+}
+</style>
+<script type="text/javascript" src="js/G2UI/base.js"></script>
+<script src="js/codemirror/lib/codemirror.js"></script>
+<script src="js/codemirror/lib/util/formatting.js"></script>
+<script src="js/codemirror/mode/css/css.js"></script>
+<script src="js/codemirror/mode/xml/xml.js"></script>
+<script src="js/codemirror/mode/javascript/javascript.js"></script>
+<script src="js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script type="text/javascript">
+$$.log.setLvl("dev");
+$$.require(["core.Util"]);
+//$$.Version.needVer = "V0.00.001";
+$$.ready(function(){
+	//$$.log.setLvl(0);
+	var UTIL = $$.Class.get("core.Util"),
+		BASEPAGE = "html.html",
+		PAGES = [{
+			title: "SM050(數據模型)",
+			url: "sm.sm050",
+			source: [{
+				title: "PageCode",
+				src: "sm/sm050.js"
+			}, {
+				title: "Meta-SM050",
+				src: "meta/SM050.js"
+			}, {
+				title: "Meta-SM055",
+				src: "meta/SM055.js"
+			}, {
+				title: "Meta-SM060",
+				src: "meta/SM060.js"
+			}],
+			requires: ["core.Container", "layout.CellLayout", "grid.Grid2"]
+		}, {
+			title: "SM065(數據庫連接)",
+			url: "sm.sm065",
+			source: [{
+				title: "PageCode",
+				src: "sm/sm065.js"
+			}, {
+				title: "Data-SM065",
+				src: "data/SM065.js"
+			}, {
+				title: "Meta-SM065",
+				src: "meta/SM065.js"
+			}, {
+				title: "Meta-SM070",
+				src: "meta/SM070.js"
+			}, {
+				title: "Meta-SM075",
+				src: "meta/SM075.js"
+			}],
+			requires: ["core.Container", "layout.CellLayout", "grid.Grid2"]
+		}, {
+			title: "SM080(數據庫連接池)",
+			url: "sm.sm080",
+			source: [{
+				title: "PageCode",
+				src: "sm/sm080.js"
+			}],
+			requires: ["core.Container", "grid.Grid2"]
+		}, {
+			title: "SM085(SQL定義)",
+			url: "sm.sm085",
+			source: [{
+				title: "PageCode",
+				src: "sm/sm085.js"
+			}, {
+				title: "Data-SM065",
+				src: "data/SM085.js"
+			}, {
+				title: "Meta-SM085",
+				src: "meta/SM085.js"
+			}],
+			requires: ["core.Container", "grid.Grid2"]
+		}, {
+			title: "SM_DEFINE(系統定義)",
+			tip: "需要服務器安裝mysql數據庫，否則頁面無法預覽",
+			url: "sm.sm_define",
+			source: [{
+				title: "PageCode",
+				src: "sm/sm_define.js"
+			}, {
+				title: "Data-SM_DEFINE",
+				src: "data/SM_DEFINE.js"
+			}, {
+				title: "Meta-SD",
+				src: "meta/SD.js"
+			}, {
+				title: "Meta-SDV",
+				src: "meta/SDV.js"
+			}],
+			requires: ["core.Container", "layout.CellLayout", "grid.Grid2"]
+		}, {
+			title: "SM_USRSCOS(用戶組織)",
+			tip: "需要服務器安裝mysql數據庫，否則頁面無法預覽",
+			url: "sm.sm_usrscos",
+			source: [{
+				title: "PageCode",
+				src: "sm/sm_usrscos.js"
+			}, {
+				title: "Data-SM_USR_COS",
+				src: "data/SM_USR_COS.js"
+			}, {
+				title: "Meta-USRS",
+				src: "meta/USRS.js"
+			}],
+			requires: ["core.Container", "layout.CellLayout", "layout.TableLayout", "grid.Grid2", "form.Form"]
+		}],
+		SELECTPAGEDOM = $("#selectPage"),
+		CURRPAGEDOM = $("#currPage"),
+		PAGEVIEWDOM = $("#pageView"),
+		EDITORSDOM = $("#editors"),
+		REQUIRESDOM = $("#requires");
+	
+	function initPages(){
+		var p, i, len = PAGES.length,
+			html = "<option selected=\"selected\" value=\"\">請選擇頁面</option>";
+		for (i = 0; i < len; i++) {
+			p = PAGES[i];
+			html += "<option value=\""+(i+1)+"\">"+p.title+"</option>";
+		}
+
+		SELECTPAGEDOM.html(html).change(function(){
+			var val = $(this).val();
+			if (val) {
+				p = PAGES[Number(val) - 1];
+				initPage(p);
+			}
+		});
+	}
+
+	function initPage(page){
+		var source = page.source,
+			requires = page.requires,
+			i = 0, len = source.length,
+			html = '<table class="main-editors">', s, ss;
+
+		html += '<tr>';
+		for (;i < len; i++) {
+			s = source[i];
+			
+			if (i !== 0 && i % 2 === 0) {
+				html += '</tr><tr>';
+			}
+			html += '<td colspan="'+(i === len - 1 && i % 2 ===0 ? 2 : 1)+'"><div class="editor-container"><textarea></textarea></div></td>';
+
+		}
+
+		html += '</tr>';
+		html += '</table>';
+		
+		EDITORSDOM.html(html).find("textarea").each(function(index, el){
+			initEditor(this, source[index]);
+		});
+
+		html = "";
+		for (i = 0, len = requires.length; i < len; i++) {
+			s = requires[i];
+			ss = $$.Loader.getPath(s);
+			
+			html += '<a target="_blank" href="'+ss+'">'+s+'<a>;';
+		}
+
+		CURRPAGEDOM.html(page.title + (page.tip ? "   <label style=\"color: #FF0000;\">注意：" + page.tip+"</label>" : ""));
+		PAGEVIEWDOM.attr("href", BASEPAGE+"?js="+page.url).show();
+		REQUIRESDOM.html(html);
+	}
+
+	function initEditor(textarea, s){
+		var width = ($(window).width()-30)/2,
+			editor = CodeMirror.fromTextArea(textarea, {
+				lineNumbers: true,
+				mode: "javascript",
+				gutters: ["CodeMirror-lint-markers"],
+				readOnly: true,
+				lint: true
+			}),
+			wrapper = editor.display.wrapper,
+			totalLines, totalChars;
+
+		editor.setSize(width, 500);
+		//editor.display.wrapper;
+		
+		var bodyContent = $$.Ajax.ajax({
+				url: s.src,
+				global: false,
+				type: "get",
+				dataType: "text",
+				async:false
+			}).responseText;
+		editor.getDoc().setValue(bodyContent);
+		totalLines = editor.lineCount();
+		totalChars = editor.getTextArea().value.length;
+		//editor.autoFormatRange({line:0, ch:0}, {line:totalLines, ch:totalChars});
+
+		var info = $('<div class="editor-info">'+s.title+'</div>').appendTo(wrapper).hide();
+
+		info.click(function(){
+			window.open(s.src);
+		});
+		$(wrapper).parent().hover(function(){
+			info.show();
+		}, function(){
+			info.hide();
+		});
+	}
+
+	$(window).bind("resize", function(){
+		EDITORSDOM.height($(window).height() - 60);
+	});
+	EDITORSDOM.height($(window).height() - 60);
+	PAGEVIEWDOM.hide();
+	initPages();
+});
+</script>
+<title>Code View</title>
+</head>
+<body>
+	<div class="header">
+		<select id="selectPage"></select><br/>
+		當前頁面：<label id="currPage" class="curr-page">無</label>
+		<a id="pageView" target="_blank">預覽</a><br/>
+		參考組件：<label id="requires" class="requires">無</label>
+	</div>
+	<div class="main" id="editors">
+		
+	</div>
+</body>
+</html>

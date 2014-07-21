@@ -1,0 +1,53 @@
+.asc-drag-proxy-ui{
+	position: absolute;
+	background-color: #000000;
+	opacity: 0.5;
+	filter:alpha(opacity=50);
+}
+.panel-container{
+	
+}
+.panel-body{
+	position: relative;
+	background-color: #FFFFFF;
+	font-size: 12px;
+	border: 1px solid #a52a2a;
+}
+.panel-body-content{
+	position: relative;
+	padding: 10px;
+}
+.panel-border{
+	border: 1px solid #a52a2a;
+}
+.panel-header{
+	font-size: 12px;
+	background-color: #5f9ea0;
+	padding: 2px;
+	height: 16px;
+}
+.panel-header table{
+	width: 100%;
+}
+.panel-header-title{
+	text-align:center;
+	display: inline-block;
+	text-align: center;
+}
+.panel-header-icon{
+	width: 18px;
+}
+.panel-header-tools{
+	text-align: right;
+}
+.panel-status{
+	background-color: gray;
+	height: 21px
+}
+.panel-tools-icon{
+	width:16px;
+	height: 16px;
+	display: inline-block;
+	float: left; zoom:1; *display:inline;
+	cursor: pointer;
+}

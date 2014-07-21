@@ -1,0 +1,39 @@
+.icon-add{
+	background: url('../images/icons/add.png') no-repeat;
+}
+.icon-edit{
+	background: url('../images/icons/edit.png') no-repeat;
+}
+.icon-remove{
+	background: url('../images/icons/remove.png') no-repeat;
+}
+.icon-save{
+	background: url('../images/icons/save.png') no-repeat;
+}
+.icon-cancel{
+	background: url('../images/icons/cancel.png') no-repeat;
+}
+.icon-refresh{
+	background: url('../images/icons/refresh.png') no-repeat;
+}
+.icon-min{
+	background: url('../images/icons/tools.gif') no-repeat 0 0;
+}
+.icon-max{
+	background: url('../images/icons/tools.gif') no-repeat 0 -16px;
+}
+.icon-restore{
+	background: url('../images/icons/tools.gif') no-repeat -16px -16px;
+}
+.icon-close{
+	background: url('../images/icons/tools.gif') no-repeat -16px 0;
+}
+.icon-collapse{
+	background: url('../images/icons/collapse.gif') no-repeat;
+}
+.icon-expand{
+	background: url('../images/icons/expand.gif') no-repeat;
+}
+.icon-search{
+	background: url('../images/icons/search.png') no-repeat;
+}

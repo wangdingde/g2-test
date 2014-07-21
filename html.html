@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<style type="text/css">
+.source{
+	border: 1px solid #000000;
+	background-color: #FFFFFF;
+	position: absolute;
+	z-index: 99999;
+	top: 0px;
+	right: 0px;
+	padding: 8px;
+	cursor: pointer;
+}
+</style>
+<script type="text/javascript" src="js/G2UI/base.js"></script>
+<script type="text/javascript">
+var a;
+$$.log.setLvl("dev");
+//$$.Version.needVer = "V0.00.001";
+$$.ready(function(){
+	//$$.log.setLvl(0);
+	var source;
+	//var querySM020 = $$.Data.getRemoteData({sqlNo: "SM015Query"});
+	//log(querySM020.getUnitData());
+	var req = ["core.Container", "data.DataModel"];
+	var result = location.search.match(/[\?\&][^\?\&]+=[^\?\&]+/g);
+	if(result){
+		for(var i = 0; i < result.length; i++){
+			var str = result[i].substring(1);
+			var valueStr = str.split('=')[1];
+			
+			req.push(valueStr);
+		}
+	}
+	
+	$$.require(req, function(){
+		if (arguments[2]) {
+			var el = $$.create(arguments[2].xtype || "core.Container", arguments[2]);
+			if (el.title) {
+				document.title = el.title;
+			}
+			$$.outerCmp = el;
+			el.resize();
+		}
+		
+		$("#source").click(function(){
+			if (source) {
+				window.open(source.replace(/[.]/ig, "/")+".js");
+			}
+		});
+	});
+});
+function aa(){
+	
+}
+</script>
+<title>Test Page</title>
+</head>
+<body style="margin: 0px;padding: 0px;">
+	<!--<div id="source" class="source">查看源碼</div> -->
+</body>
+</html>
