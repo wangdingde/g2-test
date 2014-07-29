@@ -1,9 +1,0 @@
-.form-label{
-	display: inline-block;
-	vertical-align: middle;
-	
-	word-break: keep-all;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}

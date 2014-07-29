@@ -96,7 +96,7 @@ var column = function(uicontrol){
 				w = td.width();
 			
 			editor.setWidth(w);
-			editor.setValue(grid.getColumnData(rowIndex, this.field), this);
+			editor.setValue(grid.getColumnData(grid.getRow(rowIndex), this.field), this);
 			editor.refreshShow();
 			/*if (!pos) {
 				this.endEdit();

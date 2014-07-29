@@ -2,16 +2,11 @@
 
 var gridbody = function(UICONTROL, HEADCONTAINER, UTIL, KEYMANAGER, GRIDDATA){
 	return {
-		/**
-		 * @prototype {Boolean} root 是否登記到根下，即是否直接使用$$.Grid訪問
-		 */
+		
 		root: true,
 		extend: UICONTROL,
 		mixins: [GRIDDATA, KEYMANAGER],
-		/**
-		 * @constructor
-		 * @param {Object} opts
-		 */
+		
 		ctor: function(opts) {
 			this.maxColLev = 1;
 			this.maxColIndex = 0;
@@ -33,25 +28,11 @@ var gridbody = function(UICONTROL, HEADCONTAINER, UTIL, KEYMANAGER, GRIDDATA){
 		TABLEEND: "</table>",
 		THEADSTART: "<tr class=\"grid-body-data-head\">",
 		THEADEND: "</th>",
-		/**
-		 * @prototype {Number} [maxRenderSize=500] 最大渲染數量，超過此數量的數據將分段渲染，防止頁面假死
-		 * @private
-		 */
+		
 		maxRenderSize: 500,
-		/**
-		 * @prototype {Number} [colHeight=25] 列高度
-		 * @private
-		 */
+		
 		colHeight: 25,
-		/**
-		 * @method _init
-		 * grid初始化
-		 * 初始化grid
-		 * 相關事件
-		 * 初始化dom
-		 * 初始化列，包括鎖定等狀態
-		 * @private
-		 */
+		
 		_init: function(){
 			var $dom = $(this.dom);
 			
@@ -62,11 +43,7 @@ var gridbody = function(UICONTROL, HEADCONTAINER, UTIL, KEYMANAGER, GRIDDATA){
 			this._initColumns();
 			this._initEvents();
 		},
-		/**
-		 * @method _initEvents
-		 * 初始化grid事件
-		 * @private
-		 */
+		
 		_initEvents: function(){
 			var el = this;
 			//????????????????
@@ -103,11 +80,7 @@ var gridbody = function(UICONTROL, HEADCONTAINER, UTIL, KEYMANAGER, GRIDDATA){
 			
 			this.initKeyManager && this.initKeyManager();
 		},
-		/**
-		 * @method _initColumns
-		 * 初始化columns
-		 * @private
-		 */
+		
 		_initColumns: function(){
 			var columns = this.columns || [],
 				col, key, i, len = columns.length,
@@ -170,11 +143,7 @@ var gridbody = function(UICONTROL, HEADCONTAINER, UTIL, KEYMANAGER, GRIDDATA){
 			
 			$(html).appendTo(".grid-body .grid-body-data", viewDom);
 		},
-		/**
-		 * @method _refreshOldHtml
-		 * 刷新登記view部分的原始html，爲清除數據恢復做準備
-		 * 當pos不存在時登記所有view，否則登記指定view
-		 */
+		
 		_refreshOldHtml: function(pos){
 			var view = this.view, viewBody, viewDom, html,
 				head1 = this.TABLESTART + this.THEADSTART,
@@ -189,13 +158,7 @@ var gridbody = function(UICONTROL, HEADCONTAINER, UTIL, KEYMANAGER, GRIDDATA){
 				}
 			}
 		},
-		/**
-		 * @method getView
-		 * 獲取或初始化視圖view
-		 * @param {String} [pos=main] 獲取view方向，允許的值爲：left,main,right
-		 * @return {Object} 返回對於view最外層dom節點
-		 * @private
-		 */
+		
 		getView: function(pos){
 			if (!pos) {
 				pos = "mian";
@@ -1036,6 +999,7 @@ var gridbody = function(UICONTROL, HEADCONTAINER, UTIL, KEYMANAGER, GRIDDATA){
 				st = "", i, curr, len = currs.length;
 			
 			this.getSelected().removeClass("grid-row-selected");
+			
 			for (i = 0; i < len; i++) {
 				st += (i === 0 ? "" : ",") + "tr[index='" + this.getRowIndex(currs[i]) + "']";
 			}
@@ -1053,7 +1017,6 @@ var gridbody = function(UICONTROL, HEADCONTAINER, UTIL, KEYMANAGER, GRIDDATA){
 			
 			curr = this.getRow(curr);
 			idx = this.getRowIndex(curr);
-			
 			//this.isEditing = true;
 			if (!curr) {
 				return;

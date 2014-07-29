@@ -5,7 +5,8 @@ $$.define(
 			xtype: ADQBUTTON,
 			//tpl: "${SM045_02}[${SM045_01}]",
 			unit: {
-				mname: "SM045"//,
+				accNo: "G2FW",
+				mname: "SM_USR_COS"//,
 				//uname: "SM045"
 			}
 		};

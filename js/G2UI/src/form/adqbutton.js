@@ -31,14 +31,19 @@ var adqbutton = function(BUTTON, BASEDATA, DATAUNIT, WIN, GRID, COMBO){
 		},
 		initColumnData: function() {
 			var ds = this.getSourceUnit(),
-				cols = ds.cols, columns = this.columns || [],
+				cols = ds.cols,
+				columns = this.columns || [],
+				notAllowType = ["I", "PIC", "SND", "VDO", "PID", "IDA", "LVL", "NOA", "NMA"],
 			//excludes = this.excludes || [],
 			//colNames = this.colNames || {},
-				columnData = [], item, col;
-			
+				columnData = [], item, col, cp;
 			if (columns.length === 0) {
 				for ( var i = 0; i < cols.length; i++) {
 					col = cols[i];
+					cp = col.ctype;
+					if (cp && notAllowType.indexOf(cp) !== -1) {
+						continue;
+					}
 					columnData.push({
 						no : col.cname,
 						name : this.getColCaption(col)
@@ -74,7 +79,7 @@ var adqbutton = function(BUTTON, BASEDATA, DATAUNIT, WIN, GRID, COMBO){
 			col = queryUnit.addCol("opt", "String");
 			col.opt = 2;
 			col.cannull = false;
-			col.def = "=";
+			col.def = "%%";
 			col = queryUnit.addCol("value", "String");
 			col.opt = 2;
 			col.cannull = false;
@@ -82,7 +87,8 @@ var adqbutton = function(BUTTON, BASEDATA, DATAUNIT, WIN, GRID, COMBO){
 			this.queryUnit = queryUnit;
 		},
 		initWin: function() {
-			var queryWin = this.win, 
+			var el = this,
+				queryWin = this.win, 
 				queryUnit = this.queryUnit, 
 				optData = this.optData, 
 				columnData = this.columnData;
@@ -96,6 +102,17 @@ var adqbutton = function(BUTTON, BASEDATA, DATAUNIT, WIN, GRID, COMBO){
 				minimizable: false,
 				maximizable: false,
 				modal: true,
+				btbar: [{
+					text: "確定",
+					handler: function(){
+						el.query();
+					}
+				}, {
+					text: "取消",
+					handler: function(){
+						queryWin.close();
+					}
+				}],
 				body: {
 					xtype: GRID,
 					noHeader: true,
@@ -140,16 +157,17 @@ var adqbutton = function(BUTTON, BASEDATA, DATAUNIT, WIN, GRID, COMBO){
 			this.win = queryWin;
 			//this.table = queryTable;
 		},
-		getTableId: function() {
-			return this.unit.uname + "_queryTable";
-		},
 		getColCaption: function(col) {
 			return col.getCaption();
 		},
 		getQueryParmas: function() {
-			var unit = this.unit, queryWin = this.win, queryUnit = this.queryUnit, queryTable = this.table;
-			var whereStr = this.whereStr || "", params = this.params ? $
-					.extend({}, this.params) : {}, row, column, opt, val, colKey, col, isDate;
+			var unit = this.getSourceUnit(), 
+				queryUnit = this.queryUnit,
+				rows = queryUnit.rows,
+				whereStr = this.whereStr || "", 
+				params = this.params ? $.extend({}, this.params) : {}, 
+				idx = 0,
+				row, column, opt, val, colKey, col, isDate;
 			if (this.onQuery) {
 				var obj = this.onQuery(), key;
 				if (obj) {
@@ -164,19 +182,22 @@ var adqbutton = function(BUTTON, BASEDATA, DATAUNIT, WIN, GRID, COMBO){
 					}
 				}
 			}
-			for ( var i = 0; i < queryUnit.rows.length; i++) {
-				row = queryUnit.rows[i];
+			for (var i = 0, len = rows.length; i < len; i++) {
+				row = rows[i];
 				column = row.getData("column");
 				col = unit.getCol(column);
 				isDate = this.isDateType(col.dtype);
-				colKey = isDate ? column + "_DATE" : column;
+				colKey = "P"+idx++;
+				if (isDate) {
+					colKey += "_DATE";
+				}
 				opt = row.getData("opt");
 				val = row.getData("value");
 				if (isDate) {
 					try {
 						val = $$.Util.Date.parse(val, "yyyymmdd").getTime();
 					} catch (e) {
-						$.messager.alert("警告", col.getCaption()
+						$.messager.alert("警告", this.getColCaption(col)
 								+ "日期格式不符合(年年年年月月日日)！", "warning");
 						return;
 					}
@@ -217,7 +238,8 @@ var adqbutton = function(BUTTON, BASEDATA, DATAUNIT, WIN, GRID, COMBO){
 			return type === "Date";
 		},
 		query : function() {
-			var unit = this.unit, queryWin = this.win, queryUnit = this.queryUnit, queryTable = this.table;
+			var queryWin = this.win, 
+				queryUnit = this.queryUnit;
 			if (queryUnit._err > 0) {
 				$.messager.show({
 					title : '提示',
@@ -225,22 +247,17 @@ var adqbutton = function(BUTTON, BASEDATA, DATAUNIT, WIN, GRID, COMBO){
 					timeout : 2000
 				});
 			} else {
-				var queryParams = this.getQueryParmas();
-				this._query(queryParams);
-				$(queryWin).dialog("close");
+				var res = this.getQueryParmas();
+				
+				this._query(res);
+				queryWin.close();
 			}
 		},
 		_query : function(queryParams) {
-			var unit = this.unit;
-			if (unit.mdl) {
-				$$.getRemoteData({
-					accNo : "",
-					clazz : "",
-					name : unit.mdl.mname,
-					opType : 1,
-					whereStr : queryParams.whereStr,
-					parmMap : queryParams.params
-				}, true);
+			var unit = this.getSourceUnit(),
+				mdl = unit.mdl;
+			if (mdl) {
+				$$.Data.loadRemoteData({mname: mdl.mname, whereStr: queryParams.whereStr, parmMap: queryParams.params, opType: 1, clearData: true});
 			}
 		},
 		optData: [{

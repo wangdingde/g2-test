@@ -215,6 +215,18 @@ var panel = function (UICONTROL, TOOLBAR, ICONS, UTIL) {
 		_getBarSource: function(){
 			return this.body || this;
 		},
+		setBody: function(body){
+			var oldBody = this.body,
+				bdom = this.getBody();
+			if (oldBody) {
+				oldBody.destroy();
+				this.body = undefined;
+			}
+			$(bdom).empty();
+			this[typeof body === "string" ? "content" : "body"] = body;
+			this.renderBody();
+			this.body && this.body.resize();
+		},
 		getBody: function(){
 			return $(".panel-body", this.dom)[0];
 		},
@@ -238,7 +250,7 @@ var panel = function (UICONTROL, TOOLBAR, ICONS, UTIL) {
 		},
 		resizeBody: function(width, height){
 			var b = this.body;
-			b && b.resize(width, height);
+			b && b.resize();
 		},
 		collapse: function(){
 			if (this.collapsible && !this.collapsed) {
@@ -282,7 +294,6 @@ var panel = function (UICONTROL, TOOLBAR, ICONS, UTIL) {
 			if (this.closed) {
 				this.trigger("onOpening", sender);
 				this.show();
-				
 				if (!$(".panel-body", this.dom)[0]) {
 					this.renderPanel();
 				}

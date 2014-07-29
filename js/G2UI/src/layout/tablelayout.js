@@ -29,6 +29,10 @@ var tableLayout = function(layout){
 			for (i = 0; i < len; i++) {
 				item = items[i];
 				item.resize(_itemOpts[i].width, null, true);
+				var td = $("td[index='"+i+"'] .layout-table-container", this.dom),
+					h = item.getHeight();
+				td.width(_itemOpts[i].width).height(h);
+				
 			}
 		},
 		renderItems: function(opts){
@@ -45,7 +49,7 @@ var tableLayout = function(layout){
 				//+ (opt.width ? "width=\"" + opt.width + "\"" : "")
 				//html += "<td colspan=\"" + opt.colspan + "\" rowspan=\"" + opt.rowspan + "\">"+i+"</td>";
 				//<div style=\"width: "+opt.width+"px;\">"+i+"</div>
-				html += "<td colspan=\"" + opt.colspan + "\" rowspan=\"" + opt.rowspan + "\"></td>";
+				html += "<td index="+i+" colspan=\"" + opt.colspan + "\" rowspan=\"" + opt.rowspan + "\"><div class=\"layout-table-container\" style=\"position: relative;\"></div></td>";
 			}
 			
 			html += "</tr>";
@@ -64,7 +68,7 @@ var tableLayout = function(layout){
 				}
 				
 				$(this).css(styler);
-				$(item.dom).appendTo(this);
+				$(item.dom).appendTo($(".layout-table-container", this));
 			});
 			
 			return this;
@@ -87,7 +91,7 @@ var tableLayout = function(layout){
 				colWidth = [colWidth];
 			}
 			lastWidth = colWidth[colWidth.length - 1];
-			lastWidth = lastWidth < 1 ? domw * lastWidth : lastWidth;//Math.min(1, lastWidth) * lastWidth;
+			lastWidth = lastWidth > 1 ? lastWidth : domw * lastWidth;//Math.min(1, lastWidth) * lastWidth;
 			
 			for (i = 0; i < len; i++) {
 				item = items[i];

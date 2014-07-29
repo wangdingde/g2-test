@@ -1,7 +1,8 @@
 (function ($, $$) {
-var nb = function (INPUTBOX) {
+var nb = function (INPUT, UTIL) {
+	var NUMBERUTIL = UTIL.Number;
 	return{
-		extend: INPUTBOX,
+		extend: INPUT,
 		ctor: function (opts) {
 			this.showSpinner = opts.showSpinner === true ? true : false;
 			this.stepValue = opts.stepValue || 1;
@@ -85,20 +86,20 @@ var nb = function (INPUTBOX) {
 		setData: function (data) {
 			if (!isNaN(data.value)) {
 				value = Number(data.value);
-				$$.InputBox.prototype.setData.call(this, {value: value});
+				INPUT.prototype.setData.call(this, {value: value});
 				return;
 			}
-			$$.InputBox.prototype.setData.call(this, data);
+			INPUT.prototype.setData.call(this, data);
 		},
 		_sysFormat: function (value) {
-			return $$.Util.Number.format(this.value, this.sp, this.dec);
+			return NUMBERUTIL.format(this.value, this.sp, this.dec);
 		},
 		_sysParse: function (text) {
-			return $$.Util.Number.parse(text);
+			return NUMBERUTIL.parse(text);
 		}
 	};
 };
 
-$.define('form.NumberBox', ['core.UIControl'], nb);
+$$.define('form.NumberBox', ['form.Input', "core.Util"], nb);
 
 })(window.jQuery, window.com.pouchen);

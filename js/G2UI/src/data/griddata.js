@@ -264,6 +264,7 @@ var gd = function(BASEDATA, RESULTUNIT){
 					el.appendRow(data, el);
 				},
 				"onRemoveRowed": function(row){
+					row = this.getRow(row);
 					el.removeRow(el.getRowIndex(row), el);
 				},
 				"onSetCurrented": function(oldRow, newRow){
@@ -360,7 +361,8 @@ var gd = function(BASEDATA, RESULTUNIT){
 						for (i = 0; i < len; i++) {
 							col = dcs[i];
 							editor = col.editor;
-							if (editor) {
+							
+							if (editor && editor.$instance) {
 								ori = oldRow.getData(col.field);
 								pri = editor.getValue();
 								if (pri != ori) {

@@ -1,18 +1,46 @@
 (function($, $$){
-	
+	/**
+	 * @author dd.wang <dd.wang@yydg.com.cn>
+	 * @class core.Control
+	 * @alternateClassName com.pouchen.core.Control
+	 * Control类为底层所有类的基类，所有类均直接或间接继承Control，Control本身继承自Object。
+	 * 
+	 * 主要为JS库下所有的class提供一些基本方法：{@link #apply}, {@link #bind}, {@link #unbind}等。
+	 * 
+	 */
 var control = function(){
 	
 	return {
 		root: true,
+		/**
+		 * @constructor
+		 * 创建一个Control类实例。
+		 * @param {Object} opts 实例相关配置项
+		 */
 		ctor: function(opts){
 			this._beforeCreate(opts);
 			this.apply(opts, $.extend({}, this._defCfg || {}, this.defCfg || {}), this.excludeCfg || []);
+			/**
+			 * @property {Object} [_eventList={}] 事件处理函数列表。
+			 * @private
+			 */
 			this._eventList = {};
+			/**
+			 * @property {Object} [_eventSuspend=false] 事件挂起标志。
+			 * @private
+			 */
+			this._eventSuspend = false;
 			opts.listeners && this.bind(opts.listeners);
 			this._afterCreate();
 		},
 		_beforeCreate: $$.emptyFn,
 		_afterCreate: $$.emptyFn,
+		/**
+		 * @method apply
+		 * 参数自动初始化，自动将opts中的参数与默认参数象结合并追加至类实例上。
+		 * @param {Object} opts 用户传入的参数值。
+		 * @param {Object} def 默认参数值。
+		 */
 		apply: function(opts, def, excludeCfg) { //以鍵值對opts為准﹐以鍵值對def為默認補充﹐將內容加到this
 			var key;
 			if(!opts){opts = {};}
@@ -24,6 +52,10 @@ var control = function(){
 				}
 			}
 		},
+		/**
+		 * @method clone
+		 * 复制一份新的实例，方法暂未启用。
+		 */
 		clone: function() { //TODO 還未實現
 			
 		},
@@ -31,6 +63,13 @@ var control = function(){
 			this.onDestroy();
 		},
 		onDestroy: $$.emptyFn,
+		/**
+		 * @method _parseKey
+		 * 解析传入的key字符串，解析出其中的事件名与事件作用域。
+		 * @param {String} key 完整的事件字符串。
+		 * @return {Object} {"enm":"","area":""},enm：事件名，area：事件域。
+		 * @private
+		 */
 		_parseKey: function(key) {
 			var rtn = {"enm":"","area":""};
 			if (key) {
@@ -40,6 +79,39 @@ var control = function(){
 			}
 			return rtn;
 		},
+		/**
+		 * @method bind
+		 * 给实例绑定事件响应处理函数，具有如下特性：
+		 * 
+		 * 支持多事件绑定；
+		 * 
+		 * 支持事件域；
+		 * 
+		 * 支持制定监听者，防止死循环。
+		 * 
+		 * 使用方式如下：
+		 * 
+		 * 		var el = $$.create("Control",{});
+		 * 		var dom = document.createElement("div");
+		 * 		简单用法：
+		 * 		el.bind("onSetDataed",function(oldVal, newVal){
+		 * 			alert(newVal);
+		 * 		});
+		 * 		一次绑定多个事件：
+		 * 		el.bind({
+		 * 			"myArea.onSetDataed": function(){},
+		 * 			"onClick": function(){}
+		 * 		});
+		 * 		
+		 * 		进阶用法：
+		 * 		el.bind("onSetDataed",function(oldVal, newVal){},dom);
+		 * 		注意：此用法下当呼叫el.trigger("onSetDataed", dom, oldVal, newVal)时以上处理函数不被触发;
+		 * 		
+		 * @param {String/Object} key 完整事件名,一次绑定多个处理函数时此参数为Object，其中key为事件名，value为处理函数。
+		 * @param {Function/Object} handler 事件处理函数，一次绑定多个事件时此参数为Object的监听者。
+		 * @param {Object} listrner 事件监听者，可空，此参数与{@link #trigger}中的sender配合使用，当二者相同时，事件处理函数将不会被处理.
+		 * @return {Object} 实例本身
+		 */
 		bind: function(key,handler,listener){
 			var el = this._eventList || {};
 			var map = {};
@@ -70,6 +142,18 @@ var control = function(){
 			this._eventList = el;
 			return this;
 		},
+		/**
+		 * @method unbind
+		 * 解绑事件，使用方式如下：
+		 * 
+		 * 		var el = $$.create("Control",{});
+		 * 		按事件名解绑：el.unbind("onSetData");
+		 * 		按域解绑：el.unbind("myArea.");
+		 * 		按域与事件名解绑：el.unbind("myArea.onSetData");
+		 * 
+		 * @param {String} key 完整事件名，允许只传域。
+		 * @return {Object} 实例本身。
+		 */
 		unbind: function(key) {
 			var	el = this._eventList;
 			//unbind()或unbind("")或unbind(".")﹐清除全部事件的處理函數
@@ -92,6 +176,14 @@ var control = function(){
 			}
 			return this;
 		},
+		/**
+		 * @method trigger
+		 * 触发事件，呼叫方式：el.trigger(eName,sender[,arg1,arg2....]);
+		 * @param {String} key 完整事件名。
+		 * @param {Object} sender 呼叫者，可空，结合{@link #bind}中的listenser使用。
+		 * @param {Object} args 事件消息参数，可多个。
+		 * @return {Boolean} 事件触发结果。
+		 */
 		trigger: function(key,sender) {
 			var	el = this._eventList, rtn = true;
 			if (!el || !key) {return rtn;}

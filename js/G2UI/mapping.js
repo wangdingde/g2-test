@@ -2,6 +2,7 @@
 	$$.Loader.setPath({
 		"jQuery": "jquery1.7.js",
 		"JSON": "json2-min.js",
+		"Templet": "src/external/tpl.js",
 		"plugin.zTree": "src/tree/ztree.all.min.js",
 		"tree.Tree": "src/tree/tree.js",
 		
@@ -17,6 +18,7 @@
 		"panel.Mask": "src/panel/mask.js",
 		"panel.Window": "src/panel/window.js",
 		"panel.Messager": "src/panel/messager.js",
+		"panel.Tabs": "src/panel/tabs.js",
 		
 		"layout.Layout": "src/layout/layout.js",
 		"layout.TableLayout": "src/layout/tablelayout.js",
@@ -48,6 +50,7 @@
 		"grid.Key": "src/grid/gridkey.js",
 		
 		"form.Input": "src/form/inputbox.js",
+		"form.NumberBox": "src/form/numberbox.js",
 		"form.Combo": "src/form/combo.js",
 		"form.DateBox": "src/form/datebox.js",
 		"form.CheckBox": "src/form/checkbox.js",

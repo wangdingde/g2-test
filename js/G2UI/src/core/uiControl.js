@@ -81,6 +81,7 @@ var uiControl = function(CONTROL, ZCENTER){
 		root: true,
 		extend: CONTROL,
 		ctor: function(opts) {
+			var el = this;
 			if (!this.dom && opts.selector) {
 				this.dom = typeof opts.selector == "object" ? opts.selector : $(opts.selector)[0];
 			}
@@ -89,12 +90,13 @@ var uiControl = function(CONTROL, ZCENTER){
 			}
 			
 			if (this.dom) {
-				$(this.dom).attr("xtype", this.$self.$className);
+				$(this.dom).attr("xtype", this.$self.$className).click(function(){
+					el.trigger("onDomClick");
+				});
 				//this.dom.xel = this;
 			}
 			
 			if (this.supportFocus) {
-				var el = this;
 				this.focusDom = $("<div class=\"focus-input\"><input></input></div>").appendTo(this.dom)[0];
 				$("input", this.focusDom).bind({
 					"focus": function(){

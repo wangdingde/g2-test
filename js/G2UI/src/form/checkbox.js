@@ -1,11 +1,11 @@
 (function ($, $$) {
-var CheckBox = function (input) {
+var CHECKBOX = function (INPUT) {
 	return {
 		root: true,
-		extend: input,
-		ctor: function (opts) {
-			this.on = $$.isNull(opts.on) || $$.isEmptyString(opts.on) ? 1 : opts.on;
-			this.off = $$.isNull(opts.off) || $$.isEmptyString(opts.off) ? 0 : opts.off;
+		extend: INPUT,
+		defCfg: {
+			on: 1,
+			off: 0
 		},
 		_initInput: function () {
 			this.input = this.input || document.createElement("input");
@@ -18,6 +18,7 @@ var CheckBox = function (input) {
 			if ($$.isNull(text) || $$.isEmptyString(text)) {
 				text = this.value;
 			}
+			
 			if (text == this.on) {
 				$(this.input).attr("checked", "checked");
 			} else {
@@ -26,6 +27,7 @@ var CheckBox = function (input) {
 		},
 		setData: function (data) {
 			this.value = data.value == this.on ? this.on : this.off;
+			this.refreshShow();
 			this.trigger("onSetData", this.value);
 		},
 		clearData: function () {
@@ -42,6 +44,6 @@ var CheckBox = function (input) {
 	};
 };
 
-$$.define('form.CheckBox', ['form.InputBox'], CheckBox);
+$$.define('form.CheckBox', ['form.Input'], CHECKBOX);
 
 })(window.jQuery, window.com.pouchen);

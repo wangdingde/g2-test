@@ -70,7 +70,9 @@ var lf = function(uicontrol, input, label){
 				}, this);
 			}
 			
-			fieldEl.input.id = "label-field-input-" + _idCnt++;
+			if (fieldEl.input) {
+				fieldEl.input.id = "label-field-input-" + _idCnt++;
+			}
 		},
 		_initLf: function(){
 			var label = this.label,
@@ -79,7 +81,9 @@ var lf = function(uicontrol, input, label){
 			label.field = fieldEl;
 			fieldEl.label = label;
 			
-			$(label.dom).attr("for", fieldEl.input.id);
+			if (fieldEl.input) {
+				$(label.dom).attr("for", fieldEl.input.id);
+			}
 		},
 		doResize: function(width, height){
 			var labelW = this.labelWidth || 0.3;
@@ -91,7 +95,9 @@ var lf = function(uicontrol, input, label){
 			labelW = Math.floor(Math.min(labelW, width * 0.9));
 			
 			this.label.resize(labelW, height);
-			this.fieldEl.resize(Math.floor(width - labelW), height);
+			//TODO
+			//the width!!!!
+			this.fieldEl.resize(Math.floor(width - labelW - 5), height);
 		},
 		setValue: function(val){
 			this.fieldEl.setValue(val);
@@ -118,7 +124,9 @@ var lf = function(uicontrol, input, label){
 				
 				labelW = Math.min(labelW, width * 0.9);
 				this.label.setWidth(labelW);
-				this.fieldEl.setWidth(width - labelW);
+				if (this.fieldEl && this.fieldEl.setWidth) {
+					this.fieldEl.setWidth(width - labelW - 1);
+				}
 				
 				this.width = width;
 			}

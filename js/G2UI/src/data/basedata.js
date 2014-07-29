@@ -134,6 +134,10 @@ var bd = function(CONTROL, RESULTUNIT){
 			
 			return currUnit.getRowByUid(uid);
 		},
+		getUnitRow: function(row){
+			var currUnit = this.bindingUnit || this.createUnit();
+			return currUnit ? currUnit.getRow(row) : null;
+		},
 		getRowUid: function(row){
 			if (typeof row === "number") {
 				return row;

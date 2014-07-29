@@ -5,7 +5,7 @@
 	filter:alpha(opacity=50);
 }
 .panel-container{
-	
+	background-color: #FFFFFF;
 }
 .panel-body{
 	position: relative;

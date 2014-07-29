@@ -10,6 +10,22 @@ $$.define(
 				unit: {
 					mname: "SM080",
 					uname: "SM080",
+					listeners: {
+						"onInputing": function(row, col, oldVal, newVal){
+							if (col && col.cname === "SM080_01") {
+								if (newVal === "ADMIN") {
+									throw new Error(col.getCaption()+"值非法！");
+								}
+							}
+						},
+						"onSetDataed": function(row, col, oldVal, newVal){
+							if (col && col.cname === "SM080_03") {
+								this.setData(row, "SM080_04", newVal);
+							} else if (col && col.cname === "SM080_01") {
+								this.input("SM080_02", newVal);
+							}
+						}
+					},
 					opType: 2
 				},
 				columns: [{
